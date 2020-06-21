@@ -21,7 +21,7 @@ namespace itertools
 
         class iterator
         {
-            auto data;
+            decltype(*(container.begin())) data;
             typename T::iterator start;
             typename T::iterator _end;
             accumulateFunc function;
