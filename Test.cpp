@@ -20,12 +20,10 @@ TEST_CASE("range")
     {
         CHECK(current == i++);
     }
-    bool flag = true;
     for (int current : range(7, 7)) //there is nothing to iterate in [7,6)
     {
-        flag = false;
+        CHECK(false);
     }
-    CHECK(flag);
 }
 TEST_CASE("accumulate")
 {
@@ -52,35 +50,38 @@ TEST_CASE("accumulate")
 TEST_CASE("filterfalse")
 {
     int j = 0;
-    int arr[]={1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23};
-    for (auto i: filterfalse([](int n){return n%2==0;}, range(1,25)))
+    int arr[] = {1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23};
+    for (auto i : filterfalse([](int n) { return n % 2 == 0; }, range(1, 25)))
         CHECK(i == arr[j++]);
     vector<string> vs = {"hala", "madrid", "y", "nada", "mas", ", ", "el", "mejor", "football", "club", "del", "mundo", "los", "blancos", "reyes", "del", "europa"};
     vector<string> ans = {"hala", "y", "nada", "mas", ", ", "el", "club", "del", "los", "del"};
     j = 0;
-    for (auto i: filterfalse([](string s){return s.length()> 4;}, vs))
+    for (auto i : filterfalse([](string s) { return s.length() > 4; }, vs))
         CHECK(i == ans.at(j++));
-    
+
     vector<string> cr7 = {"dhala", "de madrid", "dandy", "donde", "estas", "didi", "david", "dcristiano", "football", "club", "del", "dddddd", "los", "blancos", "reyes", "dell", "europa"};
-    vector<string> answ ={"dhala", "de madrid", "dandy", "donde", "didi", "david", "dcristiano", "del", "dddddd", "dell"} ;
+    vector<string> answ = {"dhala", "de madrid", "dandy", "donde", "didi", "david", "dcristiano", "del", "dddddd", "dell"};
     j = 0;
-    for (auto i: filterfalse([](string s){return s.at(0) != 'd';}, cr7))
+    for (auto i : filterfalse([](string s) { return s.at(0) != 'd'; }, cr7))
         CHECK(i == answ.at(j++));
-
-
-    
 }
 TEST_CASE("compress")
 {
+    vector<bool> myVectorBool2{false, false, false, false, false, false, false, false, false, false, false};
+
+    for (auto i : compress(string("InotLoveC++"), myVectorBool2))
+    {
+        cout << i<<", ";
+    }
     int arr[] = {21, 23, 25, 27, 29, 31, 33};
     int j = 0;
     for (int i : compress(range(20, 35), vector<bool>{false, true, false, true, false, true, false, true, false, true, false, true, false, true, false}))
     {
         CHECK(i == arr[j++]);
     }
-    j= 0;
-    string s="halaMadrid";
-    for (auto i: compress(string("abhyalaxMadbruidp"), vector<bool>({false, false, true, false, true, true, true, false, true, true, true, false, true, false, true, true, false})) )
+    j = 0;
+    string s = "halaMadrid";
+    for (auto i : compress(string("abhyalaxMadbruidp"), vector<bool>({false, false, true, false, true, true, true, false, true, true, true, false, true, false, true, true, false})))
         CHECK(i == s.at(j++));
 }
 TEST_CASE("Exceptions")
@@ -88,5 +89,4 @@ TEST_CASE("Exceptions")
     CHECK_THROWS(compress(range(20, 35), vector<bool>{false, true, false, true}));
     CHECK_THROWS(compress(range(20, 35), range(1, 10)));
     CHECK_THROWS(range(20, 19));
-    
 }

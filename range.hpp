@@ -9,6 +9,7 @@ namespace itertools
         int _start, _end;
 
     public:
+    typedef int value_type;
         class iterator
         {
             int value;

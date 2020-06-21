@@ -11,60 +11,69 @@ namespace itertools
         V container_2;
         class iterator
         {
-            typename T::iterator it1;
-            typename T::iterator _end;
-            typename V::iterator it2;
+            typename T::iterator con_it;
+            typename T::iterator con_end;
+            typename V::iterator bool_it;
+            void increment()
+            {
+                    ++bool_it;
+                    ++con_it;
+            }
+            void skip_failures()
+            {
+                while (con_it != con_end && !*bool_it)
+                {
+                    increment();
+                }
+            }
 
         public:
             explicit iterator(typename T::iterator i1, typename T::iterator e, typename V::iterator i2)
-                : it1(i1), _end(e), it2(i2){};
-            // iterator(const iterator& o) = default;
-            bool operator==(const iterator &other)
+                : con_it(i1), con_end(e), bool_it(i2) {skip_failures();}
+            auto operator*()
             {
-                return this->it1 == other.it1;
-            }
-            bool operator!=(const iterator &other)
-            {
-                return !(this->it1 == other.it1);
-            }
-            iterator operator++()
-            {
-                do
+                if (!(*bool_it))
                 {
-                    ++(this->it1);
-                    ++(this->it2);
-                } while (it1 != _end && !(*it2));
+                    ++(*this);
+                }
+                return *con_it;
+            }
+            iterator& operator++()
+            {
+                increment();
+                skip_failures();
                 return *this;
             }
-            iterator operator++(int)
+            iterator &operator++(int)
             {
                 iterator t = *this;
                 ++(*this);
                 return t;
             }
-            auto operator*()
+            iterator &operator=(const iterator &other)
             {
-                if (!(*it2))
+                if (*this != other)
                 {
-                    do
-                    {
-                        ++(this->it1);
-                        ++(this->it2);
-                    } while (it1 != _end && !(*it2));
+                    this->con_it = other.con_it;
+                    this->con_end = other.con_end;
+                    this->bool_it = other.bool_it;
                 }
-                return *(this->it1);
+                return *this;
+            }
+            bool operator==(const iterator &other)
+            {
+                return this->con_it == other.con_it && bool_it == other.bool_it;
+            }
+            bool operator!=(const iterator &other)
+            {
+                return !(this->con_it == other.con_it) || !(this->bool_it == other.bool_it);
             }
         };
 
     public:
         explicit compress(T t, V v)
         {
-            // typename T::iterator i;
-            // typename V::iterator j;
             int s1 = 1, s2 = 1;
-            // const type_info &t1 = typeid(bool);
-            // const type_info &t2 = typeid(*(v.begin()));
-            // cout << "t1: "<< t1.name() << ", t2: "<< t2.name() << endl;
             for (auto i : v)
             {
                 s2++;
@@ -73,12 +82,6 @@ namespace itertools
             {
                 s1++;
             }
-            //containers must be same size, container_2 must contain bool variables
-            // if (t1 != t2 && s1 != s2)
-            //     throw std::invalid_argument("1\n");
-            // if (t1 != t2)
-            //     throw std::invalid_argument("2\n");
-            this->container_1 = t;
             if (s1 != s2)
             {
                 std::cout << "s1 length= " << s1 << ", s2 length= " << s2 << std::endl;
@@ -97,4 +100,4 @@ namespace itertools
         }
     };
 
-}
+} // namespace itertools
